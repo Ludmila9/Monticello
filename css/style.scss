@@ -47,6 +47,56 @@ $dark: #2c4058;
   .col-#{$i} { width: 8.3333% * $i; }
 }
 
+// контейнер по умолчанию. Отступ между колонками
+$container: 1200px;
+$colGups: 15px;
+
+// размер текста
+$textFont-size: 1rem;  // 16px
+$linkColor: blue;
+
+// контрольные точки, на которых наш макет будет перестраиваться (могут меняться зависимости от дизайна)
+$breakpoints: (
+        xs: 0,
+        sm: 575px,
+        md: 768px,
+        lg: 1025px,
+        xl: 1200px,
+        xxl: 1440px
+);
+
+// количество колонок
+$columns: 12;
+
+// проходимся циклом по всем контрольным точкам
+@each $breakpoint in $breakpoints {
+
+  // в name записываем имя размера (xs, sm, md ...)
+  // в size записываем кол-во колонок, которые должен занимать элемент с эти классом.
+  $name: nth($breakpoint, 1);
+  $size: nth($breakpoint, 2);
+  
+  // генерируем медиа запрос для ширины брейкпоинта, который сейчас является текущим в цикле.
+  @media only screen and (min-width: $size) {
+    [class*="col-#{$name}"] {
+      box-sizing: border-box;
+      flex: 0 0 auto;
+      padding-right: $colGups;
+      padding-left: $colGups;
+    }
+    @for $i from 1 through $columns {
+      .col-#{$name}-#{$i} {
+        flex-basis: 100% / $columns * $i;
+        max-width: 100% / $columns * $i;
+      }
+    }
+    @for $i from 1 through $columns {
+      .col-#{$name}-offset-#{$i} {
+        margin-left: 100% / $columns * $i
+      }
+    }
+  }
+}
 .title{
 	font-family: "GothamProBold", Arial, sans-serif;
 	font-size: 44px;
@@ -708,7 +758,7 @@ footer{
 		repeat: no-repeat;
 	};
 	& .container{
-		padding: 0 15px;
+		max-width: 780px;
 	}
 }
 .footer{
@@ -726,7 +776,6 @@ footer{
 	&-logo{
 		text-align: left;
 		width: 50%;
-		padding-left: 190px;
 	}
 	&-soc{
 		width: 50%;
@@ -735,7 +784,6 @@ footer{
 		justify-content: flex-end;
 		align-items: center;
 		text-align: right;
-		padding-right: 180px;
 		&-list{
 			display: flex;
 			flex-direction: row;
@@ -773,9 +821,6 @@ footer{
 			font-size: 14px;
 			color: #FFF;
 			display: inline-block;
-		}
-		& p{
-			margin-left: 190px;
 		}
 		& i{
 			color: #FFF;
